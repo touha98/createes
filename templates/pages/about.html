@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+  About |
+{% endblock title %}
+
+{% block content %}
+<section id="showcase-inner" class="py-5 text-white">
+    <div class="container">
+      <div class="row text-center">
+        <div class="col-md-12">
+          <h1 class="display-4">About Createes</h1>
+          <p class="lead">Your Canvas of creativity</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Breadcrumb -->
+  <section id="bc" class="mt-3">
+    <div class="container">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="index.html">
+              <i class="fas fa-home"></i> Home</a>
+          </li>
+          <li class="breadcrumb-item active"> About</li>
+        </ol>
+      </nav>
+    </div>
+  </section>
+
+  <section id="about" class="py-4">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8">
+          <h2>We make perfect T-shirt For You</h2>
+          <img src="{% static 'img/about.jpg' %}" alt="">
+          <p class="mt-4">
+              We’re about more than shirts. We’re about you and everything you love. The passion you share with your group, club, or team; the excitement you have for your event or cause; and the drive that makes your business stand out from the rest. We believe that custom t-shirts do more than just make you look good - they help you feel good and inspire you to do good as well. We’re passionate about custom gear, but what we love even more is helping you bring what you love to life. So let’s create something together.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section id="team" class="py-5">
+    <div class="container">
+        <hr>
+        <h2 class="text-center">Our Team</h2>
+        <hr>
+      <div class="row text-center">
+        {% for agent in agents %}
+        <div class="col-md-4 justify-content-center">
+          <div class="agentphoto p-4 mx-auto">
+            <img src="{{agent.photo.url}}" alt="" class="rounded-circle mb-3 h-100 w-100">
+          </div>
+          <h4>{{agent.userAcc.first_name}}</h4>
+          <p class="text-success">
+            <i class="fas fa-award text-success mb-3"></i> Campus Ambassador</p>
+          <hr>
+          <p>
+            <i class="fas fa-phone"></i> {{agent.phone}}</p>
+          <p>
+            <i class="fas fa-envelope-open"></i> {{agent.userAcc.email}}</p>
+        </div>
+        {% endfor %}
+
+      </div>
+    </div>
+  </section>
+{% endblock content %}

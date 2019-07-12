@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{product.title}} |
+{% endblock title %}
+
+{% block content %}
+<section id="showcase-inner" class="py-5 text-white">
+  <div class="container">
+    <div class="row text-center">
+      <div class="col-md-12">
+        <h1 class="display-4">{{product.title}}</h1>
+        <p class="lead">
+          <i class="fas fa-map-marker"></i>
+          {% for key,value in location.items %}
+          {% if key == product.location %}
+          {{ value }}
+          {% endif %}
+          {% endfor %}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Breadcrumb -->
+<section id="bc" class="mt-3">
+  <div class="container">
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="{% url 'index' %}">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="{% url 'products' %}">Products</a>
+        </li>
+        <li class="breadcrumb-item active">{{product.title}}</li>
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<!-- Listing -->
+<section id="listing" class="py-4">
+  <div class="container">
+    {% include "partials/_alerts.html" %}
+    <a href="{% url 'products' %}" class="btn btn-light mb-4">Back To Products</a>
+    <div class="row">
+      <div class="col-md-6">
+        <!-- Home Main Image -->
+        <img src="{{ product.photo_main.url }}" alt="" class="img-main img-fluid mb-3">
+        <!-- Thumbnails -->
+        <div class="row mb-5 thumbs">
+          {% if product.photo_1 %}
+          <div class="col-4">
+            <a href="{{ product.photo_1.url }}" data-lightbox="home-images">
+              <img src="{{ product.photo_1.url }}" alt="" class="img-fluid">
+            </a>
+          </div>
+          {% endif %}
+
+          {% if product.photo_2 %}
+          <div class="col-4">
+            <a href="{{ product.photo_2.url }}" data-lightbox="home-images">
+              <img src="{{ product.photo_2.url }}" alt="" class="img-fluid">
+            </a>
+          </div>
+          {% endif %}
+
+        </div>
+        <!-- Fields -->
+
+      </div>
+
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item text-secondary">
+                <i class="fas fa-map-marker text-secondary"></i> Campus:
+                <span class="float-right">
+                  {% for key,value in location.items %}
+                  {% if key == product.location %}
+                  {{ value }}
+                  {% endif %}
+                  {% endfor %}
+                </span>
+              </li>
+              <li class="list-group-item text-secondary">
+                <i class="fas fa-money-bill-alt"></i> Price:
+                <span class="float-right">{{product.price}} tk</span>
+              </li>
+              <li class="list-group-item text-secondary">
+                <i class="fas fa-tshirt"></i> Size:
+                <span class="float-right">
+                  {% if product.s %}
+                  S,
+                  {% endif %}
+                  {% if product.m %}
+                  M,
+                  {% endif %}
+                  {% if product.l %}
+                  L,
+                  {% endif %}
+                  {% if product.xl %}
+                  XL,
+                  {% endif %}
+                  {% if product.xxl %}
+                  XXL,
+                  {% endif %}
+                  {% if product.xxxl %}
+                  3XL
+                  {% endif %}
+                </span>
+              </li>
+              <li class="list-group-item text-secondary">
+                <i class="fas fa-palette"></i> Color:
+                <span class="float-right">{{product.color}}</span>
+              </li>
+              <li class="list-group-item text-secondary">
+                <i class="fas fa-clock"></i> Released at:
+                <span class="float-right"> {{product.release_date}}
+                </span>
+              </li>
+              <li class="list-group-item text-secondary">
+                <i class="fas fa-user"></i> Ambassador:
+                <span class="float-right"> {{product.agent}}
+                </span>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+        <div class="row  mt-4">
+          <span class="col-sm-6">
+            bKash: <h5>{{product.bkash_no}}</h5>
+          </span>
+          <span class="col-sm-6">
+            Rocket: <h5>{{product.rocket_no}}</h5>
+          </span>
+        </div>
+        <div class="row">
+          <div class="col">
+            <button class="btn-primary btn-block btn-lg" data-toggle="modal" data-target="#inquiryModal">Order
+              Now</button>
+          </div>
+        </div>
+        <div class="row p-3">
+          <p style="white-space: pre-wrap;">{{product.description}}</p>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</section>
+
+<!-- Inquiry Modal -->
+<div class="modal fade" id="inquiryModal" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="inquiryModalLabel">Submit Order</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="{% url 'order' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="product_id" value="{{ product.id }}">
+          <input type="hidden" name="agent_email" value="{{ product.agent.userAcc.email }}">
+          <input type="hidden" name="institute" value="{{ product.location }}">
+          {% if user.is_authenticated %}
+          <input type="hidden" name="user_id" value="{{ user.id }}">
+          {% else %}
+          <input type="hidden" name="user_id" value="0">
+          {% endif %}
+          <div class="form-group">
+            <input type="text" placeholder="Enter your name" name="name" class="form-control"
+              {% if user.is_authenticated %} value="{{ user.first_name }} {{ user.last_name }}" {% endif %} required>
+          </div>
+          <div class="form-group">
+            <input type="email" name="email" placeholder="Enter a valid Email" {% if user.is_authenticated %}
+              value="{{ user.email }}" {% endif %} class="form-control" required>
+          </div>
+          <div class="form-group">
+            <input type="text" name="phone" placeholder="cell phone No." class="form-control" required>
+          </div>
+          <div class="form-row">
+            <div class="input-group col-sm-8 mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon3">Roll</span>
+              </div>
+              <input type="text" name="roll" class="form-control" placeholder="Your roll no." aria-label="Your roll no."
+                aria-describedby="basic-addon3" required>
+            </div>
+            <div class="form-group col-sm-4">
+              <input type="text" name="dept" placeholder="Department" class="form-control" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-sm-4">
+              <select name="payMethod" class=" form-control" required>
+                <option selected="true" disabled="disabled">Payment Method</option>
+                <option value="bkash">Bkash</option>
+                <option value="rocket">DBBL Rocket</option>
+              </select>
+            </div>
+            <div class="input-group col-sm-8 mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon2">TxnID</span>
+              </div>
+              <input type="text" name="txnid" class="form-control" placeholder="Transaction ID"
+                aria-label="Transaction ID" aria-describedby="basic-addon2" required>
+            </div>
+
+          </div>
+          <div class="form-row">
+            <div class="form-group col-sm-6">
+              <select name="size" class=" form-control" required>
+                <option selected="true" disabled="disabled">Select Size</option>
+                {% if product.s %}
+                <option value="s">S</option>
+                {% endif %}
+                {% if product.m %}
+                <option value="m">M</option>
+                {% endif %}
+                {% if product.l %}
+                <option value="l">L</option>
+                {% endif %}
+                {% if product.xl %}
+                <option value="xl">XL</option>
+                {% endif %}
+                {% if product.xxl %}
+                <option value="xxl">XXl</option>
+                {% endif %}
+                {% if product.xxxl %}
+                <option value="3xl">3XL</option>
+                {% endif %}
+
+              </select>
+            </div>
+            <div class="input-group col-sm-6 mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">Units</span>
+              </div>
+              <input type="number" value="1" name="units" class="form-control" placeholder="Units" aria-label="Units"
+                aria-describedby="basic-addon1" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <textarea name="message" placeholder="Optional message" class="form-control"></textarea>
+          </div>
+          <hr>
+          <input type="submit" value="Order" class="btn btn-block btn-secondary">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
