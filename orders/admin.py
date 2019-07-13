@@ -12,14 +12,12 @@ class OrderAdmin(admin.ModelAdmin):
         agent = Agent.objects.get(userAcc__id=request.user.id)
         query = super(OrderAdmin, self).get_queryset(request)
         if not request.user.is_superuser:
-            self.list_editable = ('is_delivered',)
-            self.readonly_fields = ('is_valid',)
             filtered_query = query.filter(
                 product__location=agent.location)
             return filtered_query
-        self.list_editable = ('is_valid', 'is_delivered',)
         return query
 
+    list_editable = ('is_valid', 'is_delivered',)
     list_display = ('id', 'name', 'payMethod', 'txnid', 'product', 'size',
                     'units', 'phone', 'is_valid', 'is_delivered', 'order_date')
     list_display_links = ('id', 'name',)
