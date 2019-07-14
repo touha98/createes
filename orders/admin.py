@@ -32,9 +32,9 @@ class OrderAdmin(admin.ModelAdmin):
                 send_mail(
                     "Your order is approved!",
                     f"Your order for {obj.product.title} has been approved and will be delivered soon!",
-                    'createesbd@gmail.com',
+                    'createes',
                     [obj.email],
-                    fail_silently=False
+                    fail_silently=True
                 )
                 if obj.size == 's':
                     Product.objects.filter(id=obj.product.id).update(
