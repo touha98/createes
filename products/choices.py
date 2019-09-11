@@ -9,6 +9,7 @@ location_choice = {
     'ruet': 'RUET, Rajshahi',
     'sust': 'SUST, Sylhet',
     'rmmc': 'RmMC, Rangamati',
+    'cu': 'CU, Chittagong',
 }
 
 
